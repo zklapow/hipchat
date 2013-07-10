@@ -71,6 +71,9 @@ type ErrorResponse struct {
 
 type Client struct {
 	AuthToken string
+  RoomId    string
+  User      string
+  Color     string
 }
 
 func urlValuesFromMessageRequest(req MessageRequest) (url.Values, error) {
@@ -121,6 +124,22 @@ func (c *Client) PostMessage(req MessageRequest) error {
 	}
 
 	return nil
+}
+
+func (c *Client) SendMessage(msg string) error {
+  req := MessageRequest{
+      RoomId: c.RoomId,
+      From: c.User,
+      Message: msg,
+      Color: c.Color,
+      MessageFormat: FormatText,
+      Notify: true,
+  }
+
+  if err := c.PostMessage(req); err != nil {
+    return err;
+  }
+  return nil;
 }
 
 func (c *Client) RoomHistory(id, date, tz string) ([]Message, error) {
