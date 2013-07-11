@@ -142,6 +142,17 @@ func (c *Client) SendMessage(msg string) error {
   return nil;
 }
 
+func (c *Client) Sendf(format string, args ...interface{}) {
+  c.SendMessage(fmt.Sprintf(format, args...))
+}
+
+func (c *Client) SendColor(color, format string, args ...interface{}) {
+  last := c.Color
+  c.Color = color
+  c.Sendf(format, args...)
+  c.Color = last
+}
+
 func (c *Client) RoomHistory(id, date, tz string) ([]Message, error) {
 	uri := fmt.Sprintf("%s/rooms/history?auth_token=%s&room_id=%s&date=%s&timezone=%s",
 		baseURL, url.QueryEscape(c.AuthToken), url.QueryEscape(id), url.QueryEscape(date), url.QueryEscape(tz))
